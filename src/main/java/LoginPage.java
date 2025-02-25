@@ -9,28 +9,28 @@ public class LoginPage{
         this.driver = driver;
     }
 
-    private WebElement Email() {
-        return driver.findElement(By.id("input-email"));
+    private WebElement Username() {
+        return driver.findElement(By.id("user-name"));
     }
 
     private WebElement Password() {
-        return driver.findElement(By.id("input-password"));
+        return driver.findElement(By.id("password"));
     }
 
     private WebElement Login() {
-        return driver.findElement(By.cssSelector("input.btn"));
+        return driver.findElement(By.id("login-button"));
     }
 
-    public void performLogin(String email, String password){
-        Email().clear();
-        Email().sendKeys(email);
+    public void performLogin(String username, String password){
+        Username().clear();
+        Username().sendKeys(username);
         Password().clear();
         Password().sendKeys(password);
         Login().click();
     }
 
     public String getErrorMessage() {
-        return driver.findElement(By.cssSelector("#account-login div.alert")).getText();
+        return driver.findElement(By.id("data-test")).getText();
     }
 
 }

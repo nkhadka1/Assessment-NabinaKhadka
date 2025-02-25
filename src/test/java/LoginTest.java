@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import static org.testng.AssertJUnit.assertEquals;
-import org.openqa.selenium.WebDriver;
+
 
 public class LoginTest extends SetupTest {
 
@@ -12,26 +12,27 @@ public class LoginTest extends SetupTest {
     @DataProvider
     public Iterator<Object[]> getLoginData() {
         List<Object[]> LoginData = new ArrayList<>();
-        LoginData.add(new Object[]{"john.doe@gmail.com", "Adn12", false});      //Valid Email and Invalid Password
-        LoginData.add(new Object[]{"abcdefg@gmail.com", "Admin123", false});    //Invalid Email and Valid Password
+        LoginData.add(new Object[]{"standard_user", "Adn12", false});      //Valid Username and Invalid Password
+        LoginData.add(new Object[]{"abcdefg", "secret_sauce", false});    //Invalid Username and Valid Password
         LoginData.add(new Object[]{"", "", false});                             //Empty fields
-        LoginData.add(new Object[]{"john.doe@gmail.com", "Admin123", true});    //Valid Email and Password
+        LoginData.add(new Object[]{"standard_user", "secret_sauce", true});    //Valid Username and Password
         return LoginData.iterator();
     }
 
     @Test(dataProvider = "getLoginData")
-    public void TestLogin (String email, String password,boolean isValidUser){
+    public void TestLogin (String username, String password,boolean isValidUser){
 
         // access the LambdaTest Login Page
-        driver.navigate().to("https://ecommerce-playground.lambdatest.io/index.php?route=account/login");
-        LoginPage loginPage = new LoginPage(this.driver);
-        loginPage.performLogin(email, password);
+        
+        driver.get("https://www.saucedemo.com/");
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.performLogin(username, password);
 
         if (!isValidUser) {
             assertEquals(loginPage.getErrorMessage(), "Invalid Login. Please check for the credentials.");
         } else {
-            HomePage home = new HomePage(this.driver);
-            assertEquals(HomePage.getPageTitle(), "My Account");
+            HomePage home = new HomePage(driver);
+            assertEquals(home.getPageTitle(), "Swag Labs");
         }
     }
 }
