@@ -1,0 +1,404 @@
+{
+	"info": {
+		"_postman_id": "7331a438-5e10-46eb-8b9f-2f7b90fca841",
+		"name": "VideoGameDB API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42573430"
+	},
+	"item": [
+		{
+			"name": "Authenication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Save token to variable\", function () {",
+							"    let jsonData = pm.response.json();",
+							"    if (jsonData.token) {",
+							"        pm.collectionVariables.set(\"token\", jsonData.token);",
+							"        console.log(\"Token saved:\", jsonData.token);",
+							"    } else {",
+							"        pm.test(\"Token not found in response\", function() {",
+							"            pm.expect(jsonData.token).to.exist;",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"password\": \"admin\",\n    \"username\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/authenticate",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Game",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Create game script",
+							"",
+							"// retrieve all value",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//retieve value with id",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Response has gameId\", function () {",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"});",
+							"",
+							"pm.globals.set(\"gameId\", jsonData.gameId);",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"category\": \"Platform\",\n  \"name\": \"Mario\",\n  \"rating\": \"Mature\",\n  \"releaseDate\": \"2012-05-04\",\n  \"reviewScore\": 85\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/videogame",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"videogame"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Game",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response contains correct game details\", function () {",
+							"    pm.expect(jsonData).to.have.property('id', 1 );",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"name\": \"Resident Evil 4\",\n    \"releaseDate\": \"2005-10-01 23:59:59\",\n    \"reviewScore\": 85,\n    \"category\": \"Shooter\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Gran Turismo 3\",\n    \"releaseDate\": \"2001-03-10 23:59:59\",\n    \"reviewScore\": 91,\n    \"category\": \"Driving\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 3,\n    \"name\": \"Tetris\",\n    \"releaseDate\": \"1984-06-25 23:59:59\",\n    \"reviewScore\": 88,\n    \"category\": \"Puzzle\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 4,\n    \"name\": \"Super Mario 64\",\n    \"releaseDate\": \"1996-10-20 23:59:59\",\n    \"reviewScore\": 90,\n    \"category\": \"Platform\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 5,\n    \"name\": \"The Legend of Zelda: Ocarina of Time\",\n    \"releaseDate\": \"1998-12-10 23:59:59\",\n    \"reviewScore\": 93,\n    \"category\": \"Adventure\",\n    \"rating\": \"PG-13\"\n  },\n  {\n    \"id\": 6,\n    \"name\": \"Doom\",\n    \"releaseDate\": \"1993-02-18 23:59:59\",\n    \"reviewScore\": 81,\n    \"category\": \"Shooter\",\n    \"rating\": \"Mature\"\n  },\n  {\n    \"id\": 7,\n    \"name\": \"Minecraft\",\n    \"releaseDate\": \"2011-12-05 23:59:59\",\n    \"reviewScore\": 77,\n    \"category\": \"Puzzle\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 8,\n    \"name\": \"SimCity 2000\",\n    \"releaseDate\": \"1994-09-11 23:59:59\",\n    \"reviewScore\": 88,\n    \"category\": \"Strategy\",\n    \"rating\": \"Universal\"\n  },\n  {\n    \"id\": 9,\n    \"name\": \"Final Fantasy VII\",\n    \"releaseDate\": \"1997-08-20 23:59:59\",\n    \"reviewScore\": 97,\n    \"category\": \"RPG\",\n    \"rating\": \"PG-13\"\n  },\n  {\n    \"id\": 10,\n    \"name\": \"Grand Theft Auto III\",\n    \"releaseDate\": \"2001-04-23 23:59:59\",\n    \"reviewScore\": 90,\n    \"category\": \"Driving\",\n    \"rating\": \"Mature\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/videogame/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"videogame",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Game",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"",
+							"// Validate the response format is JSON",
+							"pm.test(\"Response is in JSON format\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Check if \"name\" exists",
+							"    pm.test(\"Response contains 'name'\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"name\");",
+							"    });",
+							"",
+							"   ",
+							"    // Verify values only if the properties exist",
+							"    if (jsonData.hasOwnProperty(\"name\")) {",
+							"        pm.expect(jsonData.name).to.eql(\"Mario\");",
+							"    }",
+							"    ",
+							"",
+							"// Perform a follow-up GET request to verify update",
+							"pm.sendRequest({",
+							"    url: \"https://www.videogamedb.uk/api/games/\" + pm.environment.get(\"name\"),",
+							"    method: \"GET\"",
+							"}, function (err, res) {",
+							"    pm.test(\"GET request returns updated game details\", function () {",
+							"        let jsonData = res.json();",
+							"        pm.expect(jsonData).to.have.property(\"id\", \"1\");",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\":\"1\",\n  \"category\": \"Platform\",\n  \"name\": \"Mario\",\n  \"rating\": \"Mature\",\n  \"releaseDate\": \"2012-05-04\",\n  \"reviewScore\": 85\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/videogame/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"videogame",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Game",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.sendRequest({",
+							"    url: \"https://www.videogamedb.uk:433/api/games/1\",",
+							"    method: \"GET\"",
+							"}, function (err, res) {",
+							"    pm.test(\"Game is deleted\", function () {",
+							"        if (res) {",
+							"            pm.expect(res.status).to.eql(404); // 404: the game is successfully deleted",
+							"        } else {",
+							"            console.log(\"Error: Response is undefined\");",
+							"        }",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"timestamp\": \"2025-02-25T13:11:17.265+00:00\",\n  \"status\": 403,\n  \"error\": \"Forbidden\",\n  \"path\": \"/api/videogame/1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/games/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"games",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://www.videogamedb.uk:443",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "<enter value>",
+			"type": "string"
+		},
+		{
+			"key": "updatedGameID",
+			"value": ""
+		},
+		{
+			"key": "updatedname",
+			"value": ""
+		}
+	]
+}
